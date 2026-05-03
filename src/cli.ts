@@ -5,6 +5,7 @@ import path from "node:path";
 import { loadConfig } from "./config/loadConfig";
 import { loadFlow } from "./flows/loadFlow";
 import { createRunDirectory } from "./runs/createRunDirectory";
+import { reviewFlow } from "./reviewer/reviewFlow";
 import { runFlow } from "./runner/runFlow";
 import { logger } from "./utils/logger";
 
@@ -136,9 +137,22 @@ async function handleRun(flowPath: string) {
     runDir: runDirectory.path
   });
 
+  logger.info("Reviewing screens:");
+
+  const reviewSummary = await reviewFlow({
+    flow,
+    flowPath,
+    runDir: runDirectory.path,
+    model: config.reviewer?.model
+  });
+
+  const findingsPath =
+    path.relative(process.cwd(), reviewSummary.findingsPath) || reviewSummary.findingsPath;
+
   logger.info("Run complete.");
   logger.info(`Steps executed: ${summary.stepsExecuted}`);
   logger.info(`Screenshots captured: ${summary.screenshotsCaptured}`);
+  logger.info(`Findings: ${findingsPath}`);
   logger.info(`Run directory: ${runPath}`);
 }
 

@@ -2,8 +2,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { chromium, type Page } from "playwright";
 import type { FlowAction, FlowDefinition, FlowStep } from "../flows/schema";
+import { getStepArtifactPrefix } from "../runs/artifacts";
 import { logger } from "../utils/logger";
-import { slugify } from "../utils/slugify";
 
 type RunFlowOptions = {
   flow: FlowDefinition;
@@ -41,11 +41,6 @@ function resolveGotoUrl(baseUrl: string, target: string): string {
   }
 
   return new URL(target, baseUrl).toString();
-}
-
-function padIndex(index: number, total: number): string {
-  const width = Math.max(2, String(total).length);
-  return String(index).padStart(width, "0");
 }
 
 function shouldCapture(step: FlowStep): boolean {
@@ -174,7 +169,7 @@ export async function runFlow(options: RunFlowOptions): Promise<RunSummary> {
       stepsExecuted += 1;
 
       if (shouldCapture(step)) {
-        const filePrefix = `${padIndex(stepNumber, flow.steps.length)}-${slugify(step.name)}`;
+        const filePrefix = getStepArtifactPrefix(stepNumber, flow.steps.length, step.name);
         const screenshotPath = path.join(runDir, "screenshots", `${filePrefix}.png`);
         const domPath = path.join(runDir, "dom", `${filePrefix}.html`);
 

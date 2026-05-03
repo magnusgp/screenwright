@@ -19,7 +19,13 @@ export const configSchema = z
       })
       .default({
         output_dir: "screenwright-runs"
+      }),
+    reviewer: z
+      .object({
+        provider: z.enum(["openai"]).optional(),
+        model: z.string().min(1).optional()
       })
+      .optional()
   })
   .default({
     artifacts: {
