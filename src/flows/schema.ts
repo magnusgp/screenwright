@@ -18,7 +18,7 @@ const selectSchema = z.object({
 const actionSchema = z
   .object({
     goto: z.string().optional(),
-    click: z.string().optional(),
+    click: z.union([z.string().min(1), z.array(z.string().min(1)).min(1)]).optional(),
     fill: z.array(fillEntrySchema).optional(),
     wait_for: z.string().optional(),
     press: z.string().optional(),

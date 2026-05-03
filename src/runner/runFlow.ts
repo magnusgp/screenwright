@@ -63,7 +63,8 @@ function describeAction(action: FlowAction): string {
   }
 
   if (action.click) {
-    parts.push(`click ${action.click}`);
+    const clicks = Array.isArray(action.click) ? action.click : [action.click];
+    parts.push(clicks.length === 1 ? `click ${clicks[0]}` : `click ${clicks.length} targets`);
   }
 
   if (action.press) {
@@ -100,7 +101,10 @@ async function executeStepAction(page: Page, baseUrl: string, step: FlowStep) {
   }
 
   if (action.click) {
-    await page.click(action.click);
+    const clicks = Array.isArray(action.click) ? action.click : [action.click];
+    for (const selector of clicks) {
+      await page.click(selector);
+    }
   }
 
   if (action.press) {
