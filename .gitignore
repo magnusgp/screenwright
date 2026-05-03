@@ -3,3 +3,4 @@ node_modules/
 /screenwright-runs/
 .env
 .DS_Store
+.vscode/
