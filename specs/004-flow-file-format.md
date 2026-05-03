@@ -46,6 +46,7 @@ steps:
       # or click: string | [string]
       # or fill: [{ selector: string, value: string }]
       # or wait_for: string
+      # or wait_for_url: string
       # or press: string
       # or select: { selector: string, value: string }
       # or screenshot: true
@@ -60,6 +61,7 @@ steps:
 - `click`: Playwright selector string, or a list of selectors executed in order.
 - `fill`: array of { selector, value } pairs.
 - `wait_for`: selector or text selector for Playwright to wait on.
+- `wait_for_url`: URL or path to wait on after interactions.
 - `press`: key string (example: Enter).
 - `select`: { selector, value } for select inputs.
 - `screenshot`: forces a capture even if `expect.screenshot` is false.
