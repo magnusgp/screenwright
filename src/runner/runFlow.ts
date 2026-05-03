@@ -44,6 +44,23 @@ function resolveGotoUrl(baseUrl: string, target: string): string {
   return new URL(target, baseUrl).toString();
 }
 
+function isAuthPath(value?: string): boolean {
+  if (!value) {
+    return false;
+  }
+
+  return value.includes("/login") || value.includes("/signup");
+}
+
+function isAuthUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    return isAuthPath(parsed.pathname);
+  } catch {
+    return false;
+  }
+}
+
 function shouldCapture(step: FlowStep): boolean {
   return step.expect?.screenshot === true || step.action.screenshot === true;
 }
@@ -132,6 +149,18 @@ export async function runFlow(options: RunFlowOptions): Promise<RunSummary> {
   const consoleEntries: ConsoleEntry[] = [];
   const networkErrors: NetworkErrorEntry[] = [];
 
+  if (storageStatePath) {
+    try {
+      await fs.access(storageStatePath);
+    } catch (error) {
+      const err = error as NodeJS.ErrnoException;
+      if (err.code === "ENOENT") {
+        throw new Error(`Auth storage state not found: ${storageStatePath}`);
+      }
+      throw error;
+    }
+  }
+
   const browser = await chromium.launch();
   const viewport = flow.app.viewport ?? { width: 1280, height: 800 };
   const context = await browser.newContext({
@@ -183,9 +212,19 @@ export async function runFlow(options: RunFlowOptions): Promise<RunSummary> {
         throw new Error(`Step failed (${step.name}): ${message}`);
       }
 
+      if (storageStatePath && isAuthUrl(page.url()) && !isAuthPath(step.action.goto)) {
+        throw new Error(`Auth required: redirected to ${page.url()}`);
+      }
+
       stepsExecuted += 1;
 
       if (shouldCapture(step)) {
+        try {
+          await page.waitForLoadState("networkidle", { timeout: 5000 });
+        } catch {
+          // Ignore network idle timeouts for chatty apps.
+        }
+
         const filePrefix = getStepArtifactPrefix(stepNumber, flow.steps.length, step.name);
         const screenshotPath = path.join(runDir, "screenshots", `${filePrefix}.png`);
         const domPath = path.join(runDir, "dom", `${filePrefix}.html`);

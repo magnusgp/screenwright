@@ -15,9 +15,10 @@ type RunDirectoryOptions = {
 
 export async function createRunDirectory(options: RunDirectoryOptions): Promise<RunDirectory> {
   const now = options.now ?? new Date();
-  const dateStamp = now.toISOString().slice(0, 10);
+  const timestamp = now.toISOString().slice(0, 19).replace(/[:T]/g, "-");
   const slug = slugify(options.flowName);
-  const runId = `${dateStamp}-${slug}`;
+  const nonce = Math.random().toString(36).slice(2, 6);
+  const runId = `${timestamp}-${slug}-${nonce}`;
 
   const baseDir = path.resolve(options.baseDir);
   const runDir = path.join(baseDir, runId);
