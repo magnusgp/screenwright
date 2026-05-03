@@ -1,0 +1,5 @@
+node_modules/
+/dist/
+/screenwright-runs/
+.env
+.DS_Store
