@@ -21,6 +21,7 @@ const actionSchema = z
     click: z.union([z.string().min(1), z.array(z.string().min(1)).min(1)]).optional(),
     fill: z.array(fillEntrySchema).optional(),
     wait_for: z.string().optional(),
+    wait_for_url: z.string().optional(),
     press: z.string().optional(),
     select: selectSchema.optional(),
     screenshot: z.boolean().optional()

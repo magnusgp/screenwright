@@ -75,6 +75,10 @@ function describeAction(action: FlowAction): string {
     parts.push(`wait_for ${action.wait_for}`);
   }
 
+  if (action.wait_for_url) {
+    parts.push(`wait_for_url ${action.wait_for_url}`);
+  }
+
   if (action.screenshot) {
     parts.push("screenshot");
   }
@@ -113,6 +117,11 @@ async function executeStepAction(page: Page, baseUrl: string, step: FlowStep) {
 
   if (action.wait_for) {
     await page.waitForSelector(action.wait_for, { state: "visible" });
+  }
+
+  if (action.wait_for_url) {
+    const targetUrl = resolveGotoUrl(baseUrl, action.wait_for_url);
+    await page.waitForURL(targetUrl);
   }
 }
 
