@@ -35,7 +35,7 @@ For each run, Screenwright creates an artifact folder:
 
 ```text
 screenwright-runs/
-	2026-05-03-onboarding/
+	2026-05-03-14-05-12-onboarding-abcd/
 		screenshots/
 			01-open-home.png
 			02-click-sign-up.png
