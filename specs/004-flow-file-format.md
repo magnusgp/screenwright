@@ -4,6 +4,8 @@
 
 Flow files are YAML documents that define the app under review, the target persona, and the step-by-step actions to execute.
 
+String values may include environment variable placeholders like `${VAR_NAME}`. Screenwright substitutes these at runtime and errors if a referenced variable is missing.
+
 Top-level fields:
 
 - name (required)

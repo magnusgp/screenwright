@@ -18,6 +18,7 @@ Produce a complete flow file in YAML that a developer can run immediately.
 4. Include reviewer questions that match the persona and the screen purpose.
 5. Use only supported actions: goto, click, fill, wait_for, press, select, screenshot.
 6. Keep step names short, unique, and slug-friendly.
+7. For credentials or secrets, use environment placeholders like `${EPOK_EMAIL}`.
 
 ## Required content
 

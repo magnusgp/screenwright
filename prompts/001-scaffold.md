@@ -30,7 +30,7 @@ Use:
 - Commander for CLI
 - Zod for schema validation
 - yaml for YAML parsing
-- dotenv for environment variables
+- Environment variables via process.env (do not load .env)
 - tsx for local development
 
 ## Implement
