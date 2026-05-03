@@ -43,7 +43,7 @@ steps:
   - name: string
     action:
       goto: string
-      # or click: string
+      # or click: string | [string]
       # or fill: [{ selector: string, value: string }]
       # or wait_for: string
       # or press: string
@@ -57,7 +57,7 @@ steps:
 ## Action rules
 
 - `goto`: accepts an absolute URL or a path. If a path starts with `/`, it is resolved against `app.url`.
-- `click`: Playwright selector string.
+- `click`: Playwright selector string, or a list of selectors executed in order.
 - `fill`: array of { selector, value } pairs.
 - `wait_for`: selector or text selector for Playwright to wait on.
 - `press`: key string (example: Enter).
