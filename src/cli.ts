@@ -1,5 +1,4 @@
 import { Command } from "commander";
-import dotenv from "dotenv";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { loadConfig } from "./config/loadConfig";
@@ -113,8 +112,6 @@ async function handleInit(force: boolean) {
 }
 
 async function handleRun(flowPath: string) {
-  dotenv.config();
-
   const config = await loadConfig(CONFIG_FILE);
   const flow = await loadFlow(flowPath);
   const runDirectory = await createRunDirectory({
