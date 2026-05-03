@@ -8,6 +8,7 @@ import { logger } from "../utils/logger";
 type RunFlowOptions = {
   flow: FlowDefinition;
   runDir: string;
+  storageStatePath?: string;
 };
 
 type ConsoleEntry = {
@@ -126,14 +127,17 @@ async function executeStepAction(page: Page, baseUrl: string, step: FlowStep) {
 }
 
 export async function runFlow(options: RunFlowOptions): Promise<RunSummary> {
-  const { flow, runDir } = options;
+  const { flow, runDir, storageStatePath } = options;
 
   const consoleEntries: ConsoleEntry[] = [];
   const networkErrors: NetworkErrorEntry[] = [];
 
   const browser = await chromium.launch();
   const viewport = flow.app.viewport ?? { width: 1280, height: 800 };
-  const context = await browser.newContext({ viewport });
+  const context = await browser.newContext({
+    viewport,
+    ...(storageStatePath ? { storageState: storageStatePath } : {})
+  });
   const page = await context.newPage();
 
   page.on("console", (message) => {

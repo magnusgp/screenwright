@@ -19,6 +19,9 @@ const CONFIG_TEMPLATE = `app:
 
 artifacts:
   output_dir: screenwright-runs
+
+auth:
+  storage_state_path: user-flows/auth.storage.json
 `;
 
 const FLOW_TEMPLATE = `name: onboarding
@@ -131,7 +134,8 @@ async function handleRun(flowPath: string) {
 
   const summary = await runFlow({
     flow,
-    runDir: runDirectory.path
+    runDir: runDirectory.path,
+    storageStatePath: config.auth?.storage_state_path
   });
 
   logger.info("Reviewing screens:");

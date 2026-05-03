@@ -25,6 +25,11 @@ export const configSchema = z
         provider: z.enum(["openai"]).optional(),
         model: z.string().min(1).optional()
       })
+      .optional(),
+    auth: z
+      .object({
+        storage_state_path: z.string().min(1)
+      })
       .optional()
   })
   .default({

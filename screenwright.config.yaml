@@ -6,3 +6,6 @@ app:
 
 artifacts:
   output_dir: screenwright-runs
+
+auth:
+  storage_state_path: user-flows/auth.storage.json
