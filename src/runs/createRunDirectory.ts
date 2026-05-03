@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { slugify } from "../utils/slugify";
 
 export type RunDirectory = {
   id: string;
@@ -11,16 +12,6 @@ type RunDirectoryOptions = {
   flowName: string;
   now?: Date;
 };
-
-function slugify(value: string): string {
-  const slug = value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-  return slug || "run";
-}
 
 export async function createRunDirectory(options: RunDirectoryOptions): Promise<RunDirectory> {
   const now = options.now ?? new Date();

@@ -4,8 +4,8 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { loadConfig } from "./config/loadConfig";
 import { loadFlow } from "./flows/loadFlow";
-import type { FlowAction } from "./flows/schema";
 import { createRunDirectory } from "./runs/createRunDirectory";
+import { runFlow } from "./runner/runFlow";
 import { logger } from "./utils/logger";
 
 const CONFIG_FILE = "screenwright.config.yaml";
@@ -82,40 +82,6 @@ async function writeFileIfAllowed(filePath: string, content: string, force: bool
   return true;
 }
 
-function describeAction(action: FlowAction): string {
-  const parts: string[] = [];
-
-  if (action.goto) {
-    parts.push(`goto ${action.goto}`);
-  }
-
-  if (action.click) {
-    parts.push(`click ${action.click}`);
-  }
-
-  if (action.fill) {
-    parts.push(`fill ${action.fill.length} field${action.fill.length === 1 ? "" : "s"}`);
-  }
-
-  if (action.wait_for) {
-    parts.push(`wait_for ${action.wait_for}`);
-  }
-
-  if (action.press) {
-    parts.push(`press ${action.press}`);
-  }
-
-  if (action.select) {
-    parts.push(`select ${action.select.selector}`);
-  }
-
-  if (action.screenshot) {
-    parts.push("screenshot");
-  }
-
-  return parts.join(", ") || "(no action)";
-}
-
 async function handleInit(force: boolean) {
   const created: string[] = [];
   const skipped: string[] = [];
@@ -163,11 +129,17 @@ async function handleRun(flowPath: string) {
   logger.info(`Persona role: ${personaRole}`);
   logger.info(`Number of steps: ${flow.steps.length}`);
   logger.info(`Run directory: ${runPath}`);
-  logger.info("Planned steps:");
+  logger.info("Executing steps:");
 
-  flow.steps.forEach((step, index) => {
-    logger.info(`${index + 1}. ${step.name} - ${describeAction(step.action)}`);
+  const summary = await runFlow({
+    flow,
+    runDir: runDirectory.path
   });
+
+  logger.info("Run complete.");
+  logger.info(`Steps executed: ${summary.stepsExecuted}`);
+  logger.info(`Screenshots captured: ${summary.screenshotsCaptured}`);
+  logger.info(`Run directory: ${runPath}`);
 }
 
 export function buildCli() {
@@ -185,7 +157,7 @@ export function buildCli() {
 
   program
     .command("run")
-    .description("Validate a flow and print the planned steps")
+    .description("Run a flow and capture evidence")
     .argument("<flow>", "Path to a flow YAML file")
     .action(async (flowPath: string) => {
       await handleRun(flowPath);
