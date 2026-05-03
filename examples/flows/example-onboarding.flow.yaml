@@ -1,0 +1,58 @@
+name: onboarding
+description: Basic onboarding flow for a sample app.
+
+app:
+  url: http://localhost:3000
+  viewport:
+    width: 1280
+    height: 800
+
+persona:
+  role: founder
+  company_stage: early-stage
+  expertise: medium
+  goal: create an account and reach the dashboard
+  tolerance: low
+
+review:
+  focus:
+    - clarity
+    - navigation
+    - trust
+  output_language: english
+
+steps:
+  - name: open-home
+    action:
+      goto: /
+    expect:
+      screenshot: true
+      reviewer_question: >
+        What do you think this page is for, and what would you click next?
+
+  - name: click-sign-up
+    action:
+      click: "text=Sign up"
+    expect:
+      screenshot: true
+      reviewer_question: >
+        Is it clear what information will be needed to sign up?
+
+  - name: fill-email
+    action:
+      fill:
+        - selector: "input[name='email']"
+          value: "alex@example.com"
+      click: "text=Continue"
+    expect:
+      screenshot: true
+      reviewer_question: >
+        Does the next step make sense after entering an email?
+
+  - name: wait-for-confirmation
+    action:
+      wait_for: "text=Check your email"
+    expect:
+      screenshot: true
+      reviewer_question: >
+        Is the confirmation message clear and actionable?

@@ -1,0 +1,8 @@
+app:
+  url: http://localhost:3000
+  viewport:
+    width: 1280
+    height: 800
+
+artifacts:
+  output_dir: screenwright-runs
